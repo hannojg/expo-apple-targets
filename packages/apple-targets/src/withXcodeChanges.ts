@@ -59,6 +59,8 @@ export type XcodeSettings = {
 
   hasAccentColor?: boolean;
 
+  embedInApp: boolean;
+
   colors?: Record<string, string>;
 
   teamId?: string;
@@ -1243,13 +1245,15 @@ async function applyXcodeChanges(
     remoteInfo: productName,
   });
 
-  const targetDependency = PBXTargetDependency.create(project, {
-    target: widgetTarget,
-    targetProxy: containerItemProxy,
-  });
+  if (props.embedInApp) {
+    const targetDependency = PBXTargetDependency.create(project, {
+      target: widgetTarget,
+      targetProxy: containerItemProxy,
+    });
 
-  // Add the target dependency to the main app, should be only one.
-  mainAppTarget.props.dependencies.push(targetDependency);
+    // Add the target dependency to the main app, should be only one.
+    mainAppTarget.props.dependencies.push(targetDependency);
+  }
 
   // Check if we need to add target dependencies to the widgetTarget
   props.dependencyTargets?.forEach((dependencyTarget) => {
@@ -1319,10 +1323,10 @@ async function applyXcodeChanges(
     }
   });
 
-  if (copyFilesBuildPhase) {
+  if (copyFilesBuildPhase && props.embedInApp) {
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
-  } else {
+  } else if (props.embedInApp) {
     const dstPath = (
       { clip: "AppClips", watch: "Watch" } as Record<string, string>
     )[props.type];

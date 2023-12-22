@@ -71,7 +71,10 @@ This file can have the following properties:
 
   // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
   // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
-  "bundleIdentifier": ".mywidget"
+  "bundleIdentifier": ".mywidget",
+
+  // Default is true. When true it will embed the target in the app (this is very likely what you want).
+  "embedInApp": true
 }
 ```
 
