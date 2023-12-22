@@ -899,9 +899,9 @@ async function applyXcodeChanges(
   const productName = props.name;
   // const productName = props.name + "Extension";
 
-  const targetToUpdate =
-    targets.find((target) => target.props.productName === productName) ??
-    targets[0];
+  const targetToUpdate = targets.find(
+    (target) => target.props.productName === productName
+  );
 
   if (targetToUpdate) {
     console.log(
@@ -912,11 +912,12 @@ async function applyXcodeChanges(
   const magicCwd = path.join(config._internal!.projectRoot, "ios", props.cwd);
 
   function getOrCreateBuildFile(file: PBXFileReference): PBXBuildFile {
-    for (const entry of file.getReferrers()) {
-      if (PBXBuildFile.is(entry) && entry.props.fileRef.uuid === file.uuid) {
-        return entry;
-      }
-    }
+    // TODO: this is causing issues in pod install - need to find out why
+    // for (const entry of file.getReferrers()) {
+    //   if (PBXBuildFile.is(entry) && entry.props.fileRef.uuid === file.uuid) {
+    //     return entry;
+    //   }
+    // }
     return PBXBuildFile.create(project, {
       fileRef: file,
     });
